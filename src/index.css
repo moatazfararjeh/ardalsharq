@@ -1,0 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 30% 98%;
+    --foreground: 215 30% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 30% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 30% 15%;
+
+    --primary: 205 85% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 200 25% 93%;
+    --secondary-foreground: 215 30% 20%;
+
+    --muted: 210 20% 95%;
+    --muted-foreground: 215 15% 50%;
+
+    --accent: 195 80% 40%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 210 25% 90%;
+    --input: 210 25% 90%;
+    --ring: 205 85% 45%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Custom catalog tokens */
+    --frost: 200 60% 96%;
+    --frost-foreground: 205 85% 35%;
+    --ice: 200 80% 92%;
+    --category-cheese: 42 90% 55%;
+    --category-meat: 0 70% 55%;
+    --category-fish: 200 80% 50%;
+    --category-vegetables: 140 60% 45%;
+    --category-potato: 35 80% 55%;
+    --category-butter: 45 85% 60%;
+    --category-sausage: 15 75% 50%;
+    --category-other: 260 50% 55%;
+
+    --gradient-hero: linear-gradient(135deg, hsl(205 85% 45%), hsl(195 80% 40%));
+    --gradient-frost: linear-gradient(180deg, hsl(200 60% 96%), hsl(0 0% 100%));
+    --shadow-card: 0 4px 20px -4px hsl(205 85% 45% / 0.12);
+    --shadow-card-hover: 0 8px 30px -4px hsl(205 85% 45% / 0.2);
+  }
+
+  .dark {
+    --background: 215 30% 8%;
+    --foreground: 210 20% 95%;
+
+    --card: 215 30% 12%;
+    --card-foreground: 210 20% 95%;
+
+    --popover: 215 30% 12%;
+    --popover-foreground: 210 20% 95%;
+
+    --primary: 205 85% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 215 25% 18%;
+    --secondary-foreground: 210 20% 90%;
+
+    --muted: 215 20% 16%;
+    --muted-foreground: 215 15% 60%;
+
+    --accent: 195 80% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 215 25% 20%;
+    --input: 215 25% 20%;
+    --ring: 205 85% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    direction: rtl;
+  }
+
+  body {
+    @apply bg-background text-foreground font-cairo;
+  }
+}
+
+@layer utilities {
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .gradient-frost {
+    background: var(--gradient-frost);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  .shadow-card-hover {
+    box-shadow: var(--shadow-card-hover);
+  }
+}
