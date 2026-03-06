@@ -23,13 +23,13 @@ const ProductCatalog = () => {
 
   useEffect(() => {
     // Fetch products and their images
-    fetch("http://localhost:9090/api/products")
+    fetch("/api/products")
       .then((res) => res.json())
       .then(async (data) => {
         // For each product, fetch its images
         const withImages = await Promise.all(
           data.map(async (p: any) => {
-            const imgRes = await fetch(`http://localhost:9090/api/products/${p.id}/images`);
+            const imgRes = await fetch(`/api/products/${p.id}/images`);
             const imgs = await imgRes.json();
             return { ...p, images: imgs.map((img: any) => img.image_url) };
           })

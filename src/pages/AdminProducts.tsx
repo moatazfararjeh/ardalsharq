@@ -34,12 +34,12 @@ export default function AdminProducts({ onLogout }: { onLogout?: () => void }) {
 
   useEffect(() => {
     // Fetch products and their images
-    fetch("http://localhost:9090/api/products")
+    fetch("/api/products")
       .then((res) => res.json())
       .then(async (products) => {
         // For each product, fetch its images
         const withImages = await Promise.all(products.map(async (p: Product) => {
-          const imgRes = await fetch(`http://localhost:9090/api/products/${p.id}/images`);
+          const imgRes = await fetch(`/api/products/${p.id}/images`);
           const imgs = await imgRes.json();
           return { ...p, images: imgs.map((img: any) => img.image_url) };
         }));
@@ -62,7 +62,7 @@ export default function AdminProducts({ onLogout }: { onLogout?: () => void }) {
   const handleDelete = async (id?: number) => {
     if (!id) return;
     setLoading(true);
-    await fetch(`http://localhost:9090/api/products/${id}`, { method: "DELETE" });
+    await fetch(`/api/products/${id}`, { method: "DELETE" });
     setProducts((prev) => prev.filter((p) => p.id !== id));
     setLoading(false);
   };
@@ -83,7 +83,7 @@ export default function AdminProducts({ onLogout }: { onLogout?: () => void }) {
     };
     if (editing) {
       // تعديل منتج
-      await fetch(`http://localhost:9090/api/products/${editing.id}`, {
+      await fetch(`/api/products/${editing.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -91,7 +91,7 @@ export default function AdminProducts({ onLogout }: { onLogout?: () => void }) {
       productId = editing.id;
     } else {
       // إضافة منتج جديد
-      const res = await fetch("http://localhost:9090/api/products", {
+      const res = await fetch("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -101,18 +101,18 @@ export default function AdminProducts({ onLogout }: { onLogout?: () => void }) {
     }
     // Upload images if any
     if (form.images && form.images.length > 0 && productId) {
-      await fetch(`http://localhost:9090/api/products/${productId}/images`, {
+      await fetch(`/api/products/${productId}/images`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ images: form.images }),
       });
     }
     // إعادة جلب المنتجات من السيرفر لضمان ظهور اسم الماركة
-    fetch("http://localhost:9090/api/products")
+    fetch("/api/products")
       .then((res) => res.json())
       .then(async (products) => {
         const withImages = await Promise.all(products.map(async (p: Product) => {
-          const imgRes = await fetch(`http://localhost:9090/api/products/${p.id}/images`);
+          const imgRes = await fetch(`/api/products/${p.id}/images`);
           const imgs = await imgRes.json();
           return { ...p, images: imgs.map((img: any) => img.image_url) };
         }));
@@ -163,7 +163,7 @@ export default function AdminProducts({ onLogout }: { onLogout?: () => void }) {
             onClick={async () => {
               if (window.confirm("هل أنت متأكد من حذف جميع المنتجات؟")) {
                 setLoading(true);
-                await fetch("http://localhost:9090/api/products/all", { method: "DELETE" });
+                await fetch("/api/products/all", { method: "DELETE" });
                 setProducts([]);
                 setLoading(false);
               }
