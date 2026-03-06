@@ -4,6 +4,11 @@ import express from 'express';
 import pool from './db.js';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Global error logging
 process.on('uncaughtException', (err) => {
@@ -17,8 +22,22 @@ process.on('unhandledRejection', (reason, promise) => {
 
 
 const app = express();
-app.use(cors({ origin: ['http://localhost:8080', 'http://localhost:8081'] }));
+
+// CORS configuration
+const allowedOrigins = [
+  'http://localhost:8080',
+  'http://localhost:8081',
+  'https://supabase.ardalsharq.com',
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
+app.use(cors({ origin: allowedOrigins }));
 app.use(express.json({ limit: "20mb" }));
+
+// Serve static files from dist folder in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../dist')));
+}
 
 // حذف جميع المنتجات دفعة واحدة
 app.delete('/api/products/all', async (req, res) => {
@@ -136,12 +155,6 @@ app.delete('/api/products/:id', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 9090;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-
 // Add product image(s) for a product
 app.post('/api/products/:id/images', async (req, res) => {
   const { id } = req.params;
@@ -168,4 +181,17 @@ app.get('/api/products/:id/images', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// Serve index.html for all non-API routes (SPA support)
+if (process.env.NODE_ENV === 'production') {
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  });
+}
+
+const PORT = process.env.PORT || 9090;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });

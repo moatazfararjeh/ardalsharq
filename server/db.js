@@ -1,6 +1,9 @@
 import dotenv from 'dotenv';
 import pkg from 'pg';
-dotenv.config({ path: './server/.env' });
+
+// Load environment variables from .env.local for development, .env for production
+dotenv.config({ path: process.env.NODE_ENV === 'production' ? './.env' : './.env.local' });
+
 const { Pool } = pkg;
 
 console.log('DB_PASSWORD value:', process.env.DB_PASSWORD, 'Type:', typeof process.env.DB_PASSWORD);
