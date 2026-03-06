@@ -79,6 +79,7 @@ export default function AdminProducts({ onLogout }: { onLogout?: () => void }) {
     // تجهيز البيانات للإرسال
     const payload = {
       ...form,
+      categoryId: form.categoryId ? Number(form.categoryId) : null,
       brandId: form.brandId ? Number(form.brandId) : null,
     };
     if (editing) {
