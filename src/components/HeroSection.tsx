@@ -27,7 +27,7 @@ const HeroSection = () => {
          متخصصون في توزيع الأغذية المجمدة والمبرّدة لتجّار الجملة، الموزّعين، السوبرماركت والمطاعم في الأردن.
           </p>
           <div className="flex flex-wrap justify-center gap-3 mt-8">
-            {["نبيل", "الوادي", "أمريكانا", "لورباك", "بوك", "الإكرام", "تب توب"].map((brand) => (
+            {["نبيل", "الوادي", "أمريكانا", "لورباك","الإكرام", "تب توب"].map((brand) => (
               <span
                 key={brand}
                 className="bg-primary-foreground/15 backdrop-blur-sm text-primary-foreground text-sm font-medium px-4 py-1.5 rounded-full border border-primary-foreground/20"
