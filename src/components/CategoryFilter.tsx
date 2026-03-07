@@ -1,6 +1,7 @@
 type Category = {
   id: number;
   name: string;
+  icon?: string;
 };
 
 interface CategoryFilterProps {
@@ -32,6 +33,7 @@ const CategoryFilter = ({ categories, activeCategory, onCategoryChange }: Catego
               : "bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground"
           }`}
         >
+          {cat.icon && <span className="ml-1">{cat.icon}</span>}
           {cat.name}
         </button>
       ))}

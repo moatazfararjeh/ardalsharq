@@ -14,6 +14,7 @@ interface Product {
 interface Category {
   id: number;
   name: string;
+  icon?: string;
 }
 
 interface Brand {

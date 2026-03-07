@@ -19,6 +19,7 @@ type Product = {
 type Category = {
   id: number;
   name: string;
+  icon?: string;
 };
 
 const ProductCatalog = () => {
@@ -114,6 +115,7 @@ const ProductCatalog = () => {
         {groupedProducts.map(({ category, products: catProducts }) => (
           <div key={category.id}>
             <div className="flex items-center gap-3 mb-5">
+              {category.icon && <span className="text-2xl">{category.icon}</span>}
               <h2 className="text-xl font-bold text-foreground">{category.name}</h2>
               <span className="text-sm text-muted-foreground">({catProducts.length})</span>
               <div className="flex-1 h-px bg-border" />
