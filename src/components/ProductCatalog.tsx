@@ -1,6 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
 import { Search } from "lucide-react";
-import { categories } from "@/data/products";
 import CategoryFilter from "./CategoryFilter";
 import ProductCard from "./ProductCard";
 import GalleryModal from "./GalleryModal";
@@ -12,16 +11,30 @@ type Product = {
   price?: number;
   image_url?: string;
   category?: string;
-  categoryId?: string;
+  categoryId?: number;
+  category_id?: number;
+  images?: string[];
+};
+
+type Category = {
+  id: number;
+  name: string;
 };
 
 const ProductCatalog = () => {
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [galleryImages, setGalleryImages] = useState<string[] | null>(null);
 
   useEffect(() => {
+    // Fetch categories
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data) => setCategories(data))
+      .catch(() => setCategories([]));
+
     // Fetch products and their images
     fetch("/api/products")
       .then((res) => res.json())
@@ -42,8 +55,8 @@ const ProductCatalog = () => {
 
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
-      // دعم category_id من الـ backend وcategoryId من الداتا القديمة
-      const catId = p.categoryId || p.category_id || p.category;
+      // Support category_id from database
+      const catId = p.category_id || p.categoryId;
       const matchesCategory = !activeCategory || catId === activeCategory;
       const matchesSearch = !searchQuery || p.name.includes(searchQuery);
       return matchesCategory && matchesSearch;
@@ -52,18 +65,19 @@ const ProductCatalog = () => {
 
   const groupedProducts = useMemo(() => {
     if (activeCategory) {
-      return [{ category: categories.find((c) => c.id === activeCategory)!, products: filteredProducts }];
+      const category = categories.find((c) => c.id === activeCategory);
+      return category ? [{ category, products: filteredProducts }] : [];
     }
     return categories
       .map((cat) => ({
         category: cat,
         products: filteredProducts.filter((p) => {
-          const catId = p.categoryId || p.category_id || p.category;
+          const catId = p.category_id || p.categoryId;
           return catId === cat.id;
         }),
       }))
       .filter((g) => g.products.length > 0);
-  }, [filteredProducts, activeCategory]);
+  }, [filteredProducts, activeCategory, categories]);
 
   return (
     <section className="container mx-auto px-4 py-12">
@@ -83,7 +97,11 @@ const ProductCatalog = () => {
 
       {/* Category Filter */}
       <div className="mb-10">
-        <CategoryFilter activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
+        <CategoryFilter 
+          categories={categories}
+          activeCategory={activeCategory} 
+          onCategoryChange={setActiveCategory} 
+        />
       </div>
 
       {/* Count */}
@@ -96,7 +114,6 @@ const ProductCatalog = () => {
         {groupedProducts.map(({ category, products: catProducts }) => (
           <div key={category.id}>
             <div className="flex items-center gap-3 mb-5">
-              <span className="text-2xl">{category.icon}</span>
               <h2 className="text-xl font-bold text-foreground">{category.name}</h2>
               <span className="text-sm text-muted-foreground">({catProducts.length})</span>
               <div className="flex-1 h-px bg-border" />

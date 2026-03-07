@@ -1,11 +1,15 @@
-import { categories } from "@/data/products";
+type Category = {
+  id: number;
+  name: string;
+};
 
 interface CategoryFilterProps {
-  activeCategory: string | null;
-  onCategoryChange: (categoryId: string | null) => void;
+  categories: Category[];
+  activeCategory: number | null;
+  onCategoryChange: (categoryId: number | null) => void;
 }
 
-const CategoryFilter = ({ activeCategory, onCategoryChange }: CategoryFilterProps) => {
+const CategoryFilter = ({ categories, activeCategory, onCategoryChange }: CategoryFilterProps) => {
   return (
     <div className="flex flex-wrap gap-2 justify-center">
       <button
@@ -28,7 +32,6 @@ const CategoryFilter = ({ activeCategory, onCategoryChange }: CategoryFilterProp
               : "bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground"
           }`}
         >
-          <span className="ml-1">{cat.icon}</span>
           {cat.name}
         </button>
       ))}
