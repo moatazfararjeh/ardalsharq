@@ -113,6 +113,26 @@ app.post('/api/register', async (req, res) => {
 });
 
 
+// Get all categories
+app.get('/api/categories', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM categories ORDER BY name');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get all brands
+app.get('/api/brands', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM brands ORDER BY name');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Get all products
 app.get('/api/products', async (req, res) => {
   try {

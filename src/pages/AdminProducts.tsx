@@ -1,18 +1,25 @@
 import { useState, useEffect, useRef } from "react";
-import { categories, brands } from "@/data/products";
 
 // نموذج المنتج
-
 interface Product {
   id?: number;
   name: string;
-  categoryId: string;
+  categoryId: number | string;
   brandId?: number | string;
   brand_name?: string;
   images?: string[];
   thumbnailIndex?: number;
 }
 
+interface Category {
+  id: number;
+  name: string;
+}
+
+interface Brand {
+  id: number;
+  name: string;
+}
 
 const emptyProduct: Product = {
   name: "",
@@ -24,6 +31,8 @@ const emptyProduct: Product = {
 
 export default function AdminProducts({ onLogout }: { onLogout?: () => void }) {
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
   const [editing, setEditing] = useState<Product | null>(null);
   const [form, setForm] = useState<Product>(emptyProduct);
   const [loading, setLoading] = useState(false);
@@ -33,6 +42,16 @@ export default function AdminProducts({ onLogout }: { onLogout?: () => void }) {
 
 
   useEffect(() => {
+    // Fetch categories
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data) => setCategories(data));
+    
+    // Fetch brands
+    fetch("/api/brands")
+      .then((res) => res.json())
+      .then((data) => setBrands(data));
+    
     // Fetch products and their images
     fetch("/api/products")
       .then((res) => res.json())
@@ -150,7 +169,8 @@ export default function AdminProducts({ onLogout }: { onLogout?: () => void }) {
   // فلترة المنتجات حسب الاسم والتصنيف
   const filteredProducts = products.filter((product) => {
     const matchesName = filterName === "" || product.name.toLowerCase().includes(filterName.toLowerCase());
-    const matchesCategory = filterCategory === "" || product.categoryId === filterCategory || (product as any).category_id === filterCategory;
+    const productCategoryId = product.categoryId || (product as any).category_id;
+    const matchesCategory = filterCategory === "" || String(productCategoryId) === filterCategory;
     return matchesName && matchesCategory;
   });
 
@@ -200,8 +220,8 @@ export default function AdminProducts({ onLogout }: { onLogout?: () => void }) {
           className="border p-2 rounded w-full"
         >
           <option value="">اختر الماركة (اختياري)</option>
-          {brands.map((b, idx) => (
-            <option key={b} value={idx + 1}>{b}</option>
+          {brands.map((b) => (
+            <option key={b.id} value={b.id}>{b.name}</option>
           ))}
         </select>
         <input type="file" multiple accept="image/*" onChange={handleImageChange} className="border p-2 rounded w-full" />
