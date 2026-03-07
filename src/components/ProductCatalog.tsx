@@ -28,6 +28,7 @@ const ProductCatalog = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [galleryImages, setGalleryImages] = useState<string[] | null>(null);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
 
   useEffect(() => {
     // Fetch categories
@@ -80,6 +81,18 @@ const ProductCatalog = () => {
       .filter((g) => g.products.length > 0);
   }, [filteredProducts, activeCategory, categories]);
 
+  const handleCategoryChange = (categoryId: number | null) => {
+    setActiveCategory(categoryId);
+    setHasUserInteracted(true);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    if (e.target.value) {
+      setHasUserInteracted(true);
+    }
+  };
+
   return (
     <section className="container mx-auto px-4 py-12">
       {/* Search */}
@@ -90,7 +103,7 @@ const ProductCatalog = () => {
             type="text"
             placeholder="ابحث عن منتج..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
             className="w-full pr-10 pl-4 py-3 rounded-xl bg-card border border-border text-card-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-shadow font-cairo"
           />
         </div>
@@ -101,40 +114,50 @@ const ProductCatalog = () => {
         <CategoryFilter 
           categories={categories}
           activeCategory={activeCategory} 
-          onCategoryChange={setActiveCategory} 
+          onCategoryChange={handleCategoryChange} 
         />
       </div>
 
-      {/* Count */}
-      <p className="text-center text-muted-foreground mb-8 text-sm">
-        عدد المنتجات: <span className="font-bold text-foreground">{filteredProducts.length}</span> منتج
-      </p>
+      {/* Count - Only show if user has interacted */}
+      {hasUserInteracted && (
+        <p className="text-center text-muted-foreground mb-8 text-sm">
+          عدد المنتجات: <span className="font-bold text-foreground">{filteredProducts.length}</span> منتج
+        </p>
+      )}
 
-      {/* Products by Category */}
-      <div className="space-y-10">
-        {groupedProducts.map(({ category, products: catProducts }) => (
-          <div key={category.id}>
-            <div className="flex items-center gap-3 mb-5">
-              {category.icon && <span className="text-2xl">{category.icon}</span>}
-              <h2 className="text-xl font-bold text-foreground">{category.name}</h2>
-              <span className="text-sm text-muted-foreground">({catProducts.length})</span>
-              <div className="flex-1 h-px bg-border" />
+      {/* Products by Category - Only show if user has interacted */}
+      {hasUserInteracted && (
+        <div className="space-y-10">
+          {groupedProducts.map(({ category, products: catProducts }) => (
+            <div key={category.id}>
+              <div className="flex items-center gap-3 mb-5">
+                {category.icon && <span className="text-2xl">{category.icon}</span>}
+                <h2 className="text-xl font-bold text-foreground">{category.name}</h2>
+                <span className="text-sm text-muted-foreground">({catProducts.length})</span>
+                <div className="flex-1 h-px bg-border" />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                {catProducts.map((product, index) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    index={index}
+                    onClick={() => product.images && product.images.length > 0 && setGalleryImages(product.images)}
+                  />
+                ))}
+              </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-              {catProducts.map((product, index) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  index={index}
-                  onClick={() => product.images && product.images.length > 0 && setGalleryImages(product.images)}
-                />
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
-      {filteredProducts.length === 0 && (
+      {!hasUserInteracted && (
+        <div className="text-center py-16">
+          <p className="text-muted-foreground text-lg">اختر صنفاً أو ابحث عن منتج لعرض النتائج</p>
+        </div>
+      )}
+
+      {hasUserInteracted && filteredProducts.length === 0 && (
         <div className="text-center py-16">
           <p className="text-muted-foreground text-lg">لا توجد منتجات مطابقة للبحث</p>
         </div>

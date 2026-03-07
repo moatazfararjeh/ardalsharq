@@ -1,7 +1,7 @@
 import HeroSection from "@/components/HeroSection";
 import ProductCatalog from "@/components/ProductCatalog";
 import Footer from "@/components/Footer";
-import { MapPin, Phone, Facebook } from "lucide-react";
+import { MapPin, Phone, Facebook, Package } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Index = () => {
@@ -9,25 +9,72 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <HeroSection />
       
-      {/* Navigation Menu */}
-      <nav className="sticky top-0 z-40 bg-white border-b shadow-sm">
+      {/* Navigation Cards */}
+      <section className="py-16 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4">
-          <div className="flex justify-center gap-8 py-4">
-            <a href="#products" className="text-lg font-semibold hover:text-primary transition-colors">
-              منتجاتنا
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            {/* Products Card */}
+            <a href="#products" className="group">
+              <Card className="h-full hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary">
+                <CardContent className="pt-6 pb-6 text-center">
+                  <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Package className="w-10 h-10 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                    منتجاتنا
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-2">اكتشف جميع المنتجات</p>
+                </CardContent>
+              </Card>
             </a>
-            <a href="#location" className="text-lg font-semibold hover:text-primary transition-colors">
-              موقعنا
+
+            {/* Location Card */}
+            <a href="#location" className="group">
+              <Card className="h-full hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary">
+                <CardContent className="pt-6 pb-6 text-center">
+                  <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <MapPin className="w-10 h-10 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                    موقعنا
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-2">تعرف على موقعنا</p>
+                </CardContent>
+              </Card>
             </a>
-            <a href="#facebook" className="text-lg font-semibold hover:text-primary transition-colors">
-              صفحة الفيسبوك
+
+            {/* Facebook Card */}
+            <a href="#facebook" className="group">
+              <Card className="h-full hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary">
+                <CardContent className="pt-6 pb-6 text-center">
+                  <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Facebook className="w-10 h-10 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                    صفحة الفيسبوك
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-2">تابعنا على فيسبوك</p>
+                </CardContent>
+              </Card>
             </a>
-            <a href="#contact" className="text-lg font-semibold hover:text-primary transition-colors">
-              تواصل معنا
+
+            {/* Contact Card */}
+            <a href="#contact" className="group">
+              <Card className="h-full hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary">
+                <CardContent className="pt-6 pb-6 text-center">
+                  <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Phone className="w-10 h-10 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                    تواصل معنا
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-2">اتصل بنا الآن</p>
+                </CardContent>
+              </Card>
             </a>
           </div>
         </div>
-      </nav>
+      </section>
 
       {/* Products Section */}
       <section id="products" className="scroll-mt-20">
@@ -81,7 +128,7 @@ const Index = () => {
               <div className="text-center space-y-4">
                 <p className="text-lg">تابعونا على فيسبوك لمعرفة آخر العروض والمنتجات الجديدة</p>
                 <a
-                  href="https://www.facebook.com/your-page"
+                  href="https://www.facebook.com/profile.php?id=61587917750474"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold"

@@ -12,7 +12,7 @@ interface CategoryFilterProps {
 
 const CategoryFilter = ({ categories, activeCategory, onCategoryChange }: CategoryFilterProps) => {
   return (
-    <div className="flex flex-wrap gap-2 justify-center">
+    <div className="flex flex-col md:flex-row md:flex-wrap gap-2 justify-center">
       <button
         onClick={() => onCategoryChange(null)}
         className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
