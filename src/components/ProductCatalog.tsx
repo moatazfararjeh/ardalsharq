@@ -33,26 +33,55 @@ const ProductCatalog = () => {
   useEffect(() => {
     // Fetch categories
     fetch("/api/categories")
-      .then((res) => res.json())
-      .then((data) => setCategories(data))
-      .catch(() => setCategories([]));
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to fetch categories');
+        return res.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setCategories(data);
+        } else {
+          console.error('Categories response is not an array:', data);
+          setCategories([]);
+        }
+      })
+      .catch((err) => {
+        console.error('Error fetching categories:', err);
+        setCategories([]);
+      });
 
     // Fetch products and their images
     fetch("/api/products")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to fetch products');
+        return res.json();
+      })
       .then(async (data) => {
+        if (!Array.isArray(data)) {
+          console.error('Products response is not an array:', data);
+          setProducts([]);
+          return;
+        }
         // For each product, fetch its images
         const withImages = await Promise.all(
           data.map(async (p: any) => {
-            const imgRes = await fetch(`/api/products/${p.id}/images`);
-            const imgs = await imgRes.json();
-            return { ...p, images: imgs.map((img: any) => img.image_url) };
+            try {
+              const imgRes = await fetch(`/api/products/${p.id}/images`);
+              if (!imgRes.ok) return { ...p, images: [] };
+              const imgs = await imgRes.json();
+              return { ...p, images: Array.isArray(imgs) ? imgs.map((img: any) => img.image_url) : [] };
+            } catch {
+              return { ...p, images: [] };
+            }
           })
         );
         console.log('Products with images:', withImages);
         setProducts(withImages);
       })
-      .catch(() => setProducts([]));
+      .catch((err) => {
+        console.error('Error fetching products:', err);
+        setProducts([]);
+      });
   }, []);
 
   const filteredProducts = useMemo(() => {
