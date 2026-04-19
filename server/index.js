@@ -27,7 +27,9 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:8080',
   'http://localhost:8081',
+  'https://shop.ardalsharq.com',
   'https://supabase.ardalsharq.com',
+  'https://supabasemobile.ardalsharq.com',
   process.env.FRONTEND_URL
 ].filter(Boolean);
 
