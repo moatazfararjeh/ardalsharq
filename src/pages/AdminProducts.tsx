@@ -40,6 +40,9 @@ export default function AdminProducts({ onLogout }: { onLogout?: () => void }) {
   const [filterName, setFilterName] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [newCategoryIcon, setNewCategoryIcon] = useState("");
+  const [categoryLoading, setCategoryLoading] = useState(false);
 
 
   useEffect(() => {
@@ -167,6 +170,32 @@ export default function AdminProducts({ onLogout }: { onLogout?: () => void }) {
     setForm((prev) => ({ ...prev, thumbnailIndex: idx }));
   };
 
+  const handleAddCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCategoryName.trim()) return;
+    setCategoryLoading(true);
+    const res = await fetch("/api/categories", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: newCategoryName.trim(), icon: newCategoryIcon.trim() || undefined }),
+    });
+    if (res.ok) {
+      const added = await res.json();
+      setCategories((prev) => [...prev, added].sort((a, b) => a.name.localeCompare(b.name)));
+      setNewCategoryName("");
+      setNewCategoryIcon("");
+    }
+    setCategoryLoading(false);
+  };
+
+  const handleDeleteCategory = async (id: number) => {
+    if (!window.confirm("هل أنت متأكد من حذف هذا التصنيف؟")) return;
+    setCategoryLoading(true);
+    await fetch(`/api/categories/${id}`, { method: "DELETE" });
+    setCategories((prev) => prev.filter((c) => c.id !== id));
+    setCategoryLoading(false);
+  };
+
   // فلترة المنتجات حسب الاسم والتصنيف
   const filteredProducts = products.filter((product) => {
     const matchesName = filterName === "" || product.name.toLowerCase().includes(filterName.toLowerCase());
@@ -206,6 +235,60 @@ export default function AdminProducts({ onLogout }: { onLogout?: () => void }) {
         )}
       </div>
       <h1 className="text-2xl font-bold mb-6">إدارة المنتجات</h1>
+
+      {/* إدارة التصنيفات */}
+      <div className="mb-8 border rounded p-4 bg-gray-50">
+        <h2 className="text-xl font-bold mb-4">إدارة التصنيفات</h2>
+        <form onSubmit={handleAddCategory} className="flex gap-2 mb-4 flex-wrap">
+          <input
+            type="text"
+            placeholder="اسم التصنيف"
+            value={newCategoryName}
+            onChange={(e) => setNewCategoryName(e.target.value)}
+            className="border p-2 rounded flex-1"
+            required
+          />
+          <input
+            type="text"
+            placeholder="أيقونة (اختياري، مثال: ❄️)"
+            value={newCategoryIcon}
+            onChange={(e) => setNewCategoryIcon(e.target.value)}
+            className="border p-2 rounded w-40"
+          />
+          <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded" disabled={categoryLoading}>
+            إضافة تصنيف
+          </button>
+        </form>
+        <table className="w-full border text-sm">
+          <thead>
+            <tr className="bg-gray-200">
+              <th className="p-2">#</th>
+              <th className="p-2">الاسم</th>
+              <th className="p-2">الأيقونة</th>
+              <th className="p-2">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            {categories.map((cat) => (
+              <tr key={cat.id} className="border-t">
+                <td className="p-2">{cat.id}</td>
+                <td className="p-2">{cat.name}</td>
+                <td className="p-2">{cat.icon || "-"}</td>
+                <td className="p-2">
+                  <button
+                    className="bg-red-500 text-white px-2 py-1 rounded"
+                    onClick={() => handleDeleteCategory(cat.id)}
+                    disabled={categoryLoading}
+                  >
+                    حذف
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
       <form ref={formRef} onSubmit={handleSubmit} className="mb-8 space-y-4">
         <input name="name" value={form.name} onChange={handleChange} placeholder="اسم المنتج" className="border p-2 rounded w-full" required />
         <select name="categoryId" value={form.categoryId} onChange={handleChange} className="border p-2 rounded w-full" required>
