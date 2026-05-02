@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AdminProducts from "./pages/AdminProducts";
+import AdminCategories from "./pages/AdminCategories";
 import LoginPage from "./pages/LoginPage";
 import RequireAdmin from "@/components/RequireAdmin";
 import { useState } from "react";
@@ -40,6 +41,14 @@ const App = () => {
               element={
                 <RequireAdmin>
                   <AdminProducts onLogout={handleLogout} />
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="/categories"
+              element={
+                <RequireAdmin>
+                  <AdminCategories onLogout={handleLogout} />
                 </RequireAdmin>
               }
             />
